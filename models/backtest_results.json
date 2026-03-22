@@ -1,0 +1,10 @@
+{
+    "Stock": "TCS",
+    "Total_days": 1478,
+    "Total_trades": 867,
+    "Win_rate": 46.14,
+    "Market_return": 80.88,
+    "Strategy_return": -22.72,
+    "Sharpe_ratio": -0.159,
+    "Max_drawdown": -30.93
+}
