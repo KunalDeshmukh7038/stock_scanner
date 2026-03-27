@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import yfinance as yf
 import pandas as pd
@@ -10,12 +11,15 @@ from datetime import datetime, timedelta
 import warnings
 warnings.filterwarnings('ignore')
 
-st.set_page_config(
-    page_title='StockSense India',
-    page_icon='📊',
-    layout='wide',
-    initial_sidebar_state='collapsed'
-)
+IS_EMBEDDED = os.environ.get('STREAMLIT_EMBEDDED_DASHBOARD') == '1'
+
+if not IS_EMBEDDED:
+    st.set_page_config(
+        page_title='StockSense India',
+        page_icon='📊',
+        layout='wide',
+        initial_sidebar_state='collapsed'
+    )
 
 st.markdown("""
 <style>

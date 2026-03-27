@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import yfinance as yf
 import pandas as pd
@@ -17,12 +18,15 @@ except ImportError:
     AUTO_REFRESH = False
 
 # ── Page Config ──
-st.set_page_config(
-    page_title='MarketPulse India',
-    page_icon='📈',
-    layout='wide',
-    initial_sidebar_state='collapsed'
-)
+IS_EMBEDDED = os.environ.get('STREAMLIT_EMBEDDED_DASHBOARD') == '1'
+
+if not IS_EMBEDDED:
+    st.set_page_config(
+        page_title='MarketPulse India',
+        page_icon='📈',
+        layout='wide',
+        initial_sidebar_state='collapsed'
+    )
 
 # ── CSS ──
 st.markdown("""

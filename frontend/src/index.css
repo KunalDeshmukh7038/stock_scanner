@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-line;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-canvas font-sans text-ink antialiased;
+    background-image:
+      radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 18%),
+      radial-gradient(circle at top right, rgba(34, 197, 94, 0.12), transparent 16%),
+      radial-gradient(circle at 50% 0%, rgba(148, 163, 184, 0.08), transparent 35%),
+      linear-gradient(180deg, #0b0f19 0%, #0f172a 52%, #0b1120 100%);
+  }
+
+  ::selection {
+    @apply bg-highlight/30 text-white;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(148, 163, 184, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.035) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: linear-gradient(180deg, rgba(255, 255, 255, 0.5), transparent 90%);
+  }
+}
+
+@layer components {
+  .panel {
+    @apply rounded-[1.5rem] border border-line bg-surface/90 shadow-panel backdrop-blur-xl;
+  }
+
+  .panel-muted {
+    @apply rounded-[1.5rem] border border-line/80 bg-panel/90 shadow-soft backdrop-blur-xl;
+  }
+
+  .metric-pill {
+    @apply inline-flex items-center gap-2 rounded-full border border-line bg-panel/80 px-3 py-1 text-xs font-medium text-muted;
+  }
+
+  .nav-link {
+    @apply rounded-full border border-transparent px-4 py-2 text-sm font-medium text-muted transition duration-300 hover:border-line hover:bg-white/5 hover:text-white;
+  }
+
+  .table-shell {
+    @apply overflow-hidden rounded-[1.5rem] border border-line bg-surface/95 shadow-panel backdrop-blur-xl;
+  }
+
+  .control-field {
+    @apply h-14 rounded-2xl border border-line bg-[#0f172a]/90 px-4 text-sm text-ink outline-none transition duration-300 placeholder:text-muted/70 focus:border-highlight focus:ring-4 focus:ring-highlight/10;
+  }
+
+  .glass-card {
+    @apply rounded-[1.5rem] border border-white/10 bg-white/[0.03] shadow-soft backdrop-blur-xl;
+  }
+
+  .fade-in {
+    animation: fadeIn 260ms ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
