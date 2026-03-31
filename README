@@ -1,0 +1,425 @@
+ 📈 Sentimental Drive
+
+AI-Powered Sentiment-Driven Stock Prediction System for NIFTY 100
+
+
+## 🌟 Features
+
+- **📊 Live Market Dashboard** — Real-time NIFTY 50, NIFTY 100, BANKNIFTY, SENSEX via Angel One SmartAPI WebSocket
+- **🤖 AI Prediction Engine** — XGBoost model trained on 138,000+ rows across 100 NIFTY stocks
+- **📰 Sentiment Analysis** — VADER NLP scoring on live headlines from NewsAPI and Google News
+- **🔍 Stock Screener** — Filter 100 stocks by sector, signal, RSI range, and sentiment score simultaneously
+- **📈 Interactive Charts** — Candlestick and line charts with SMA 50/200 overlays and 5 time ranges
+- **🎯 BUY/SELL/HOLD Signals** — ML prediction + technical confirmation rules (RSI, MACD, SMA)
+- **⚡ 6-Tab Stock Detail** — Summary, Chart, Analysis, Sentiment, AI Prediction, Peers
+- **🔄 Auto Fallback** — Angel One → yfinance fallback so the app always works
+- **💾 Smart Caching** — TTL-based Redis-ready cache for fast repeated requests
+- **📱 Responsive Dark UI** — Institutional-grade dark theme built with Tailwind CSS
+
+---
+
+## 🏗️ System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        DATA SOURCES                              │
+│   yfinance (historical) │ Angel One SmartAPI │ NewsAPI │ Google  │
+└────────────┬────────────┴─────────┬──────────┴────┬────────────┘
+             │                      │               │
+             ▼                      ▼               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                     PROCESSING LAYER                             │
+│   Feature Engineering (22 features) │ VADER Sentiment Scoring   │
+└────────────────────────┬────────────┴────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      ML ENGINE                                   │
+│   XGBoost Classifier │ Random Forest │ Heuristic Fallback        │
+└────────────────────────┬────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    FASTAPI BACKEND                               │
+│   REST API (4 endpoints) │ WebSocket /ws/market │ TTL Cache      │
+└────────────────────────┬────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                  REACT FRONTEND                                  │
+│   Stock Screener │ 6-Tab Detail │ Live Ticker │ Candlestick      │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology | Purpose |
+|---|---|---|
+| **Frontend** | React 18 + Vite | SPA dashboard |
+| **Styling** | Tailwind CSS | Dark theme UI |
+| **State** | TanStack Query | Server state + 5min cache |
+| **Charts** | Recharts | Line, area, bar charts |
+| **Backend** | FastAPI + Uvicorn | REST API + WebSocket server |
+| **ML Model** | XGBoost, scikit-learn, LightGBM | Stock direction prediction |
+| **NLP** | VADER Sentiment | News headline scoring |
+| **Indicators** | TA library | RSI, MACD, BB, ATR (22 features) |
+| **Live Data** | Angel One SmartAPI | Real-time prices + WebSocket stream |
+| **Historical** | yfinance | 5yr OHLCV data per stock |
+| **News** | NewsAPI + Google News | Headlines for sentiment |
+| **Auth** | pyotp (TOTP 2FA) | Angel One session management |
+| **Serialization** | joblib | Model .pkl save/load |
+
+---
+
+## 📁 Project Structure
+
+```
+Sentimental_Drive_Stock/
+│
+├── backend/                        # FastAPI backend
+│   ├── main.py                     # API endpoints + WebSocket
+│   ├── angel_one.py                # Angel One SmartAPI integration
+│   ├── services/
+│   │   └── fundamentals.py         # Screener.in scraper
+│   └── requirements.txt
+│
+├── frontend/                       # React dashboard
+│   ├── src/
+│   │   ├── components/             # UI components
+│   │   │   ├── StockScreenerView.jsx
+│   │   │   ├── StockCard.jsx
+│   │   │   ├── MarketTickerBar.jsx
+│   │   │   ├── CandlestickChart.jsx
+│   │   │   ├── Gauge.jsx
+│   │   │   ├── SentimentBar.jsx
+│   │   │   └── DataTable.jsx
+│   │   ├── pages/                  # Route pages
+│   │   │   ├── HomePage.jsx
+│   │   │   ├── ScreenerPage.jsx
+│   │   │   └── StockDetailPage.jsx
+│   │   ├── lib/
+│   │   │   ├── api.js              # API calls
+│   │   │   ├── normalize.js        # Response normalization
+│   │   │   └── formatters.js       # Currency/date formatters
+│   │   └── App.jsx
+│   └── package.json
+│
+├── data/
+│   ├── ind_nifty100list.csv        # NIFTY 100 stock master list
+│   ├── nifty100_raw/               # 100 individual stock CSVs
+│   └── final_dataset/
+│       └── nifty100_combined.csv   # Combined 138k row dataset
+│
+├── models/
+│   ├── xgb_upgraded_small.pkl      # Primary XGBoost model
+│   ├── feature_cols_upgraded.json  # Canonical 22 feature names
+│   ├── rf_model.pkl                # Random Forest model
+│   └── lgb_model.pkl               # LightGBM model
+│
+├── scripts/                        # Data pipeline scripts
+│   ├── download_nifty100.py        # Download 100 stock CSVs
+│   ├── create_combined_dataset.py  # Build training dataset
+│   ├── feature_engineering.py      # Feature computation
+│   └── model_training.py           # Model training pipeline
+│
+├── app/                            # Streamlit dashboards
+│   ├── app.py                      # Dashboard launcher
+│   ├── market_dashboard.py         # Main combined view
+│   ├── prediction_dashboard.py     # Model prediction view
+│   └── stock_dashboard.py          # Legacy stock view
+│
+├── notebooks/
+│   ├── eda_analysis.ipynb          # Exploratory data analysis
+│   └── model_training.ipynb        # Model experiments
+│
+├── Procfile                        # Railway deployment
+├── runtime.txt                     # Python version
+├── requirements.txt                # Python dependencies
+└── .env.example                    # Environment variables template
+```
+
+---
+
+## ⚙️ Local Setup
+
+### Prerequisites
+
+- Python 3.11+
+- Node.js 18+
+- Git
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/sentimental-drive.git
+cd sentimental-drive
+```
+
+### 2. Backend setup
+
+```bash
+# Create virtual environment
+python -m venv venv
+
+# Activate (Windows)
+venv\Scripts\activate
+
+# Activate (macOS/Linux)
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### 3. Environment variables
+
+```bash
+# Copy the example file
+cp .env.example .env
+```
+
+Edit `.env` and fill in your credentials:
+
+```env
+# Angel One SmartAPI (optional — app works without it via yfinance fallback)
+ANGEL_API_KEY=your_api_key_here
+ANGEL_CLIENT_CODE=your_client_code
+ANGEL_PIN=your_mpin
+ANGEL_TOTP_SECRET=your_totp_base32_secret
+
+# NewsAPI (optional — improves sentiment analysis)
+NEWSAPI_KEY=your_newsapi_key
+
+# ML Model (set to 1 to use trained XGBoost, 0 for rule-based fallback)
+USE_TRAINED_MODEL=1
+```
+
+> **Note:** The app works without Angel One and NewsAPI credentials using yfinance historical data and basic sentiment rules.
+
+### 4. Download stock data (first time only)
+
+```bash
+# Download historical data for all 100 NIFTY stocks
+python scripts/download_nifty100.py
+
+# Build the combined training dataset
+python scripts/create_combined_dataset.py
+```
+
+### 5. Start the backend
+
+```bash
+python -m uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+Backend runs at: `http://localhost:8000`
+
+API docs at: `http://localhost:8000/docs`
+
+### 6. Start the frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend runs at: `http://localhost:5173`
+
+---
+
+## 🔌 API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/` | Health check |
+| `GET` | `/api/bootstrap` | Load market + all stocks in one call |
+| `GET` | `/api/market` | Live NIFTY indices data |
+| `GET` | `/api/stocks` | All 100 NIFTY stocks with signals |
+| `GET` | `/api/stocks/{symbol}` | Full stock detail with prediction |
+| `GET` | `/api/top-picks` | Top BUY and SELL signals |
+| `WS` | `/ws/market` | Live market WebSocket stream |
+
+### Example response — `/api/stocks/RELIANCE`
+
+```json
+{
+  "symbol": "RELIANCE",
+  "company_name": "Reliance Industries Ltd",
+  "sector": "Energy",
+  "current_price": 2847.50,
+  "change_pct": 1.23,
+  "rsi": 58.4,
+  "macd": 12.3,
+  "sentiment_score": 0.42,
+  "signal": "BUY",
+  "prediction": "UP",
+  "confidence": 62.0,
+  "history": [...],
+  "news": [...],
+  "feature_importance": [...]
+}
+```
+
+---
+
+## 🤖 Machine Learning
+
+### Dataset
+
+| Property | Value |
+|---|---|
+| Stocks covered | 100 NIFTY companies |
+| Total rows | 138,000+ |
+| Date range | 2020 – present |
+| Features | 22 (technical + sentiment) |
+| Target | Binary: 1 = UP, 0 = DOWN |
+| Train/test split | 80/20 chronological (no shuffle) |
+
+### Features used
+
+```
+Price:      Close, High, Low, Open, Volume
+Returns:    Return (daily), Price_chg_5d
+Trend:      SMA_10, SMA_20, SMA_50, SMA_200
+Momentum:   RSI, MACD, MACD_signal, Momentum
+Volatility: Bollinger Upper/Lower/Width/Pct, ATR, Volatility
+Volume:     Vol_MA_10, Volume_change
+Sentiment:  Sentiment_score (VADER compound)
+```
+
+### Model performance
+
+| Model | Accuracy | Notes |
+|---|---|---|
+| Random Forest (baseline) | ~50% | No hyperparameter tuning |
+| XGBoost (production) | ~55–58% | Trained on 138k rows |
+| Rule-based fallback | — | Used when model unavailable |
+
+### Signal logic
+
+```python
+if prediction == UP and RSI < 70 and Close > SMA_20 and MACD > MACD_signal:
+    signal = "BUY"
+elif prediction == DOWN and RSI > 30 and Close < SMA_20 and MACD < MACD_signal:
+    signal = "SELL"
+else:
+    signal = "HOLD"
+```
+
+---
+
+## 📊 Backtest Results (TCS — 1478 trading days)
+
+| Metric | Value |
+|---|---|
+| Total trades | 867 |
+| Win rate | 46.14% |
+| Market return (Buy & Hold) | +80.88% |
+| Strategy return | -22.72% |
+| Sharpe ratio | -0.159 |
+| Max drawdown | -30.93% |
+
+> **Note:** Raw ML signal accuracy alone is insufficient for profitable trading. Production use requires risk management, position sizing, stop-loss logic, and transaction cost modeling on top of the model signals.
+
+---
+
+## 🚀 Deployment (Railway)
+
+### 1. Push to GitHub
+
+```bash
+git add .
+git commit -m "ready for deployment"
+git push origin main
+```
+
+```
+ANGEL_API_KEY
+ANGEL_CLIENT_CODE
+ANGEL_PIN
+ANGEL_TOTP_SECRET
+NEWSAPI_KEY
+USE_TRAINED_MODEL=1
+ALLOWED_ORIGINS=https://your-frontend.vercel.app
+PYTHONUNBUFFERED=1
+```
+
+---
+
+---
+
+## 🔮 Future Scope
+
+- [ ] Replace VADER with **FinBERT** for finance-specific NLP
+- [ ] Add **Reddit and Twitter/X** sentiment integration
+- [ ] Implement proper **backtesting engine** with stop-loss and position sizing
+- [ ] Add **Optuna hyperparameter tuning** to push accuracy beyond 58%
+- [ ] Integrate **Screener.in fundamentals** (P/E, ROE, ROCE) as ML features
+- [ ] Cloud deployment with **Redis, PostgreSQL, and MLflow** model tracking
+- [ ] Add **portfolio tracker** with watchlist and alerts
+- [ ] **Mobile app** using React Native
+
+---
+
+## 🧪 Running Tests
+
+```bash
+# Backend API tests
+cd backend
+pytest tests/ -v
+
+# Test a specific endpoint
+curl http://localhost:8000/api/stocks/RELIANCE
+
+# Test WebSocket connection
+wscat -c ws://localhost:8000/ws/market
+```
+
+---
+
+## ⚠️ Disclaimer
+
+> This project is built for **educational and research purposes only**. The AI signals, predictions, and BUY/SELL/HOLD recommendations displayed are **not financial advice**. Do not make real investment decisions based on this system. Always consult a qualified financial advisor before investing. Past model performance does not guarantee future results.
+
+---
+
+## 📚 References
+
+- Bollen, J., Mao, H., & Zeng, X. (2011). *Twitter mood predicts the stock market.* Journal of Computational Science.
+- Ding, X. et al. (2015). *Deep learning for event-driven stock prediction.* IJCAI.
+- Lopez de Prado, M. — *Advances in Financial Machine Learning*, Wiley.
+- [Angel One SmartAPI Docs](https://smartapi.angelbroking.com/docs)
+- [yfinance Documentation](https://pypi.org/project/yfinance/)
+- [XGBoost Documentation](https://xgboost.readthedocs.io/)
+- [VADER Sentiment](https://github.com/cjhutto/vaderSentiment)
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+
+---
+
+## 👤 Author
+
+Kunal Deshmukhh
+MCA — Master of Computer Applications
+[pimpri chinchwad university]
+
+- GitHub:(https://github.com/KunalDeshmukh7038)
+- LinkedIn: (https://linkedin.com/in/kunaldeshmukh34)
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+
+Made with ❤️ for the Indian retail investor
+
+⭐ **Star this repo if you found it useful!**
+
+</div>
