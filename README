@@ -336,6 +336,8 @@ git commit -m "ready for deployment"
 git push origin main
 ```
 SCREENSHOT LINK:https://github.com/KunalDeshmukh7038/stock_scanner/issues/1#issue-4177418041
+IN ISSUES /CLOSED ISSUES
+
 ```
 ANGEL_API_KEY
 ANGEL_CLIENT_CODE
