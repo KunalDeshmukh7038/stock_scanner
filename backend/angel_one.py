@@ -644,7 +644,7 @@ class AngelOneMarketStream:
             credentials["api_key"],
             credentials["client_code"],
             credentials["feed_token"],
-            max_retry_attempt=5,
+            max_retry_attempt=0,
             retry_strategy=1,
             retry_delay=3,
             retry_multiplier=2,

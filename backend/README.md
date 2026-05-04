@@ -14,7 +14,7 @@ pip install -r backend\requirements.txt
 ```bash
 python -m uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
 ```
-
+#ngrok http 8080
 ## Endpoints
 
 - `GET /api/market`

@@ -1,0 +1,20 @@
+[W 260330 21:26:16 smartWebSocketV2:318] Attempting to resubscribe/reconnect (Attempt 1)...
+[W 260330 21:42:26 smartWebSocketV2:318] Attempting to resubscribe/reconnect (Attempt 2)...
+[W 260330 23:23:38 smartWebSocketV2:342] Connection closed due to max retry attempts reached.
+[W 260330 23:23:38 smartWebSocketV2:342] Connection closed due to max retry attempts reached.
+[W 260330 23:24:25 smartWebSocketV2:342] Connection closed due to max retry attempts reached.
+[W 260330 23:24:25 smartWebSocketV2:342] Connection closed due to max retry attempts reached.
+[W 260330 23:24:51 smartWebSocketV2:342] Connection closed due to max retry attempts reached.
+[W 260330 23:24:51 smartWebSocketV2:342] Connection closed due to max retry attempts reached.
+[W 260330 23:24:56 smartWebSocketV2:342] Connection closed due to max retry attempts reached.
+[W 260330 23:24:56 smartWebSocketV2:342] Connection closed due to max retry attempts reached.
+[W 260330 23:25:01 smartWebSocketV2:342] Connection closed due to max retry attempts reached.
+[W 260330 23:25:01 smartWebSocketV2:342] Connection closed due to max retry attempts reached.
+[W 260330 23:25:06 smartWebSocketV2:342] Connection closed due to max retry attempts reached.
+[W 260330 23:25:06 smartWebSocketV2:342] Connection closed due to max retry attempts reached.
+[W 260330 23:25:12 smartWebSocketV2:342] Connection closed due to max retry attempts reached.
+[W 260330 23:25:12 smartWebSocketV2:342] Connection closed due to max retry attempts reached.
+[W 260330 23:25:20 smartWebSocketV2:342] Connection closed due to max retry attempts reached.
+[W 260330 23:25:20 smartWebSocketV2:342] Connection closed due to max retry attempts reached.
+[W 260330 23:25:27 smartWebSocketV2:342] Connection closed due to max retry attempts reached.
+[W 260330 23:25:27 smartWebSocketV2:342] Connection closed due to max retry attempts reached.
